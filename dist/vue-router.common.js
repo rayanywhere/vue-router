@@ -2002,9 +2002,15 @@ var HashHistory = (function (History$$1) {
 function checkFallback (base) {
   var location = getLocation(base);
   if (!/^\/#/.test(location)) {
-    window.location.replace(
-      cleanPath(base + '/#' + location)
-    );
+
+		if (!!(window.history && window.history.replaceState)) {
+			window.history.replaceState({}, document.title, cleanPath(base + '/#' + location));
+		}
+		else {
+	    window.location.replace(
+  	    cleanPath(base + '/#' + location)
+   	  );
+		}
     return true
   }
 }
@@ -2032,9 +2038,14 @@ function pushHash (path) {
 
 function replaceHash (path) {
   var i = window.location.href.indexOf('#');
-  window.location.replace(
-    window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
-  );
+	if (!!(window.history && window.history.replaceState)) {
+		window.history.replaceState({}, document.title, window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path);
+	}
+	else {
+	  window.location.replace(
+  	  window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
+	  );
+	}
 }
 
 /*  */

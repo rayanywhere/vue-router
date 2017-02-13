@@ -61,9 +61,15 @@ export class HashHistory extends History {
 function checkFallback (base) {
   const location = getLocation(base)
   if (!/^\/#/.test(location)) {
-    window.location.replace(
-      cleanPath(base + '/#' + location)
-    )
+
+		if (!!(window.history && window.history.replaceState)) {
+			window.history.replaceState({}, document.title, cleanPath(base + '/#' + location));
+		}
+		else {
+	    window.location.replace(
+  	    cleanPath(base + '/#' + location)
+   	  )
+		}
     return true
   }
 }
@@ -91,7 +97,12 @@ function pushHash (path) {
 
 function replaceHash (path) {
   const i = window.location.href.indexOf('#')
-  window.location.replace(
-    window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
-  )
+	if (!!(window.history && window.history.replaceState)) {
+		window.history.replaceState({}, document.title, window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path);
+	}
+	else {
+	  window.location.replace(
+  	  window.location.href.slice(0, i >= 0 ? i : 0) + '#' + path
+	  )
+	}
 }
